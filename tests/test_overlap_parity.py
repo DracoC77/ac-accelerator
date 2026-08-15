@@ -39,7 +39,7 @@ class _FakeTimeline:
         return iter(self._segments)
 
     def support(self) -> "_FakeTimeline":
-        """WI-80b: production code calls annotation.get_overlap().support().
+        """Production code calls annotation.get_overlap().support().
         For the test fake, get_overlap() already returns non-adjacent merged
         regions, so support() is a no-op — just return self."""
         return self
@@ -177,7 +177,7 @@ class TestProcessDiarizationOverlapFields:
     def test_partial_overlap_ratio_correct(self):
         """Only part of the turn overlaps — ratio reflects actual fraction.
 
-        WI-80b: is_overlap now follows the ``> DIARIZE_TURN_OVERLAP_THRESHOLD``
+        is_overlap now follows the ``> DIARIZE_TURN_OVERLAP_THRESHOLD``
         rule (default 0.3, mirroring the main repo's local pyannote path)
         instead of the legacy ``> 0.0`` (any touch flags the turn).
         """
@@ -191,7 +191,7 @@ class TestProcessDiarizationOverlapFields:
         segs = result["segments"]
         assert len(segs) == 2
 
-        # SPEAKER_00 ratio=0.2 ≤ 0.3 → NOT overlap (post WI-80b).
+        # SPEAKER_00 ratio=0.2 ≤ 0.3 → NOT overlap.
         seg0 = next(s for s in segs if s["speaker"] == "SPEAKER_00")
         assert seg0["is_overlap"] is False
         assert seg0["overlap_ratio"] == pytest.approx(0.2, abs=0.001)
@@ -221,14 +221,14 @@ class TestProcessDiarizationOverlapFields:
         assert "segments" in result
         assert "num_speakers" in result
         assert "duration" in result
-        # WI-80b: overlap_regions is the merged overlap timeline serialised
+        # overlap_regions is the merged overlap timeline serialised
         # for the main repo's per-segment intersection.
         assert "overlap_regions" in result
         assert isinstance(result["overlap_regions"], list)
         assert result["num_speakers"] == 1
 
     def test_overlap_regions_emitted_for_overlapping_speech(self):
-        """WI-80b: overlap_regions reflects the merged get_overlap().support() timeline."""
+        """overlap_regions reflects the merged get_overlap().support() timeline."""
         # SPEAKER_00: 0–5s, SPEAKER_01: 3–8s → overlap region [3.0, 5.0]
         annotation = _FakeAnnotation([
             (0.0, 5.0, "SPEAKER_00"),
@@ -244,7 +244,7 @@ class TestProcessDiarizationOverlapFields:
         assert region["end"] == pytest.approx(5.0, abs=0.001)
 
     def test_overlap_regions_empty_when_no_overlap(self):
-        """WI-80b: overlap_regions is an empty list when there is no overlap."""
+        """overlap_regions is an empty list when there is no overlap."""
         annotation = _FakeAnnotation([
             (0.0, 5.0, "SPEAKER_00"),
             (5.0, 10.0, "SPEAKER_01"),

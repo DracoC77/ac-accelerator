@@ -3,7 +3,7 @@ Tests verifying temperature and no_speech_threshold are correctly included
 in the cache key (Bug 1), forwarded to the inference worker params (Bug 2), and passed
 through to mlx-whisper kwargs (Bug 3).
 
-The bugs existed prior to WI-11 (PR #26) which fixed server.py. These tests provide
+The bugs existed prior to a prior fix in server.py. These tests provide
 regression coverage to prevent the fixes from regressing.
 """
 
