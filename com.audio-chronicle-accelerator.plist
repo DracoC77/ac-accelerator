@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!--
+        Audio Chronicle Accelerator — launchd service definition
+        Installed to: ~/Library/LaunchAgents/com.audio-chronicle-accelerator.plist
+
+        NOTE: install.sh writes this plist with all paths fully expanded
+        (launchd does not expand ~ in ProgramArguments or path keys).
+        The file in the repo uses placeholder paths for reference only.
+    -->
+
+    <key>Label</key>
+    <string>com.audio-chronicle-accelerator</string>
+
+    <!--
+        start.sh sources config.env (which holds HF_TOKEN, AUTH_TOKEN, etc.)
+        before exec-ing uvicorn. launchd cannot source shell files directly,
+        so the wrapper script approach is used instead of EnvironmentVariables.
+    -->
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>/Users/USERNAME/.audio-chronicle-accelerator/start.sh</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>/Users/USERNAME/.audio-chronicle-accelerator</string>
+
+    <!-- Start automatically when the user logs in -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart automatically on crash (but not on clean exit) -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <!-- Minimum seconds between automatic restarts -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <!-- Log files — install.sh writes the real expanded paths -->
+    <key>StandardOutPath</key>
+    <string>/Users/USERNAME/.audio-chronicle-accelerator/logs/stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>/Users/USERNAME/.audio-chronicle-accelerator/logs/stderr.log</string>
+
+    <!-- Raise the open-files limit for large audio uploads -->
+    <key>SoftResourceLimits</key>
+    <dict>
+        <key>NumberOfFiles</key>
+        <integer>4096</integer>
+    </dict>
+
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>

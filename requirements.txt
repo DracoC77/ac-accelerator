@@ -1,0 +1,39 @@
+# Audio Chronicle Accelerator — Core Dependencies
+# Requires: Python >= 3.10
+#   * macOS / Apple Silicon (arm64) — uses mlx-whisper for Metal/MPS acceleration
+#   * Windows + NVIDIA RTX — uses faster-whisper (CTranslate2) for CUDA acceleration
+#
+# NOTE (Windows): torch must be installed with CUDA support BEFORE installing
+# the rest of this file, since the marker below will otherwise pull CPU-only torch:
+#   pip install torch --index-url https://download.pytorch.org/whl/cu128
+#   pip install -r requirements.txt
+# (The sys_platform marker below installs CPU torch by default — override with
+# the command above to get the cu128 wheel for the RTX 5090.)
+
+# FastAPI + server
+fastapi>=0.115.0
+uvicorn[standard]>=0.34.0
+python-multipart>=0.0.18
+
+# Diarization — pyannote (PyTorch MPS on Mac, CUDA on Windows)
+pyannote.audio>=3.1.0
+
+# --- Platform-specific transcription backends ---
+
+# Windows-only (CUDA / faster-whisper backend, WI-ACC-27b)
+faster-whisper>=1.1.0; sys_platform == "win32"
+torch>=2.7.0; sys_platform == "win32"  # install via --index-url https://download.pytorch.org/whl/cu128
+
+# Mac-only (mlx backend)
+mlx-whisper>=0.4.0; sys_platform == "darwin"
+torch>=2.0.0; sys_platform == "darwin"
+
+# Utilities
+aiosqlite>=0.20.0
+
+# Menu bar app (Mac-only)
+rumps>=0.4.0; sys_platform == "darwin"
+psutil>=5.9.0
+
+# HTTP client (menu bar app <-> server)
+requests>=2.31.0
