@@ -1,5 +1,5 @@
 """
-WI-ACC-7: Unit tests for the Audio Chronicle Accelerator server.
+Unit tests for the Audio Chronicle Accelerator server.
 
 Uses FastAPI TestClient with mocked ML inference — no real GPU, no real models.
 Tests complement test_auth.py (auth, rate-limiting, security headers).
@@ -52,7 +52,7 @@ def _ogg_file(name: str = "test.ogg") -> tuple:
 # Fixtures
 # ---------------------------------------------------------------------------
 
-# WI-ACC-28: _reset_rate_limits fixture removed — per-IP rate limiter was deleted.
+# _reset_rate_limits fixture removed — per-IP rate limiter was deleted.
 # Queue-depth 503 admission control is the only gate now; no shared state to reset.
 
 
@@ -149,7 +149,7 @@ def test_transcribe_invalid_format_returns_400(client):
 
 
 # ---------------------------------------------------------------------------
-# WI-ACC-28: Queue-depth 503 admission control
+# Queue-depth 503 admission control
 # ---------------------------------------------------------------------------
 
 def test_transcribe_queue_full_returns_503(client):
@@ -373,7 +373,7 @@ def test_cache_stats(client):
 
 
 # ---------------------------------------------------------------------------
-# WI-ACC-BUG-1: nan/inf float sanitization
+# nan/inf float sanitization
 # ---------------------------------------------------------------------------
 
 class TestSanitizeFloats:
@@ -473,7 +473,7 @@ class TestSanitizeFloats:
 
 
 class TestCacheCorruptEviction:
-    """Integration tests for corrupt cache entry eviction (WI-ACC-BUG-1 Layer 2)."""
+    """Integration tests for corrupt cache entry eviction (Layer 2)."""
 
     def test_corrupt_cache_entry_evicted_and_fresh_job_queued(self, client):
         """A cache entry with nan in result_json is evicted on cache read;

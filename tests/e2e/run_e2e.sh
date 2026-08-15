@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# WI-ACC-7: E2E shell test for Audio Chronicle Accelerator
+# E2E shell test for Audio Chronicle Accelerator
 #
 # Usage:
 #   ACCELERATOR_URL=http://localhost:8765 bash tests/e2e/run_e2e.sh
@@ -31,7 +31,7 @@ MIN_OVERLAP=0.80
 FIXTURE_DOWNLOAD_URL="${FIXTURE_URL:-}"
 
 # Reference transcript (from annotated_segments.json)
-REFERENCE_TEXT="Hey yeah sure So the plan for today is to finish up the speaker ID module Yeah totally agree I was thinking we should double check the resemblyzer version compatibility Good call I will add a smoke test for the VoiceEncoder import Okay so the afternoon session We are going to review the WI5 code The sidecar approach makes sense We might want a sanity check"
+REFERENCE_TEXT="Hey yeah sure So the plan for today is to finish up the speaker ID module Yeah totally agree I was thinking we should double check the resemblyzer version compatibility Good call I will add a smoke test for the VoiceEncoder import Okay so the afternoon session We are going to review the code The sidecar approach makes sense We might want a sanity check"
 
 # ---------------------------------------------------------------------------
 # Helpers

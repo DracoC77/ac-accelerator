@@ -1,7 +1,7 @@
 # Inference Backend Architecture
 
-This document describes the pluggable inference backend system introduced in
-WI-ACC-27a and extended by WI-ACC-27b (faster-whisper / Windows support).
+This document describes the pluggable inference backend system, including the
+MLX backend and the faster-whisper / Windows backend.
 
 ---
 

@@ -4,7 +4,7 @@
 
 .DESCRIPTION
     Instruments VRAM release across four kill scenarios for the AccServer
-    Windows service.  References WI-ACC-27c "Graceful shutdown / VRAM release".
+    Windows service.  Covers graceful shutdown / VRAM release.
 
     Tests:
       1. Graceful stop via `nssm stop` while idle (model loaded)

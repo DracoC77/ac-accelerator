@@ -1,4 +1,4 @@
-"""WI-ACC-27d: companion_client.py tests.
+"""companion_client.py tests.
 
 These tests cover the cross-platform server-polling and service-control
 layer used by both ``menubar_app.py`` (Mac) and ``tray_app.py`` (Windows).
@@ -102,7 +102,7 @@ def test_get_status_parses_current_server_shape():
 
 
 def test_get_status_parses_flat_health_shape():
-    """Parse the simpler flat /health shape from the WI-ACC-27d spec example."""
+    """Parse the simpler flat /health shape from the spec example."""
     mock_resp = MagicMock()
     mock_resp.status_code = 200
     mock_resp.json.return_value = {

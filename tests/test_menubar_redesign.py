@@ -1,5 +1,5 @@
 """
-tests/test_wi_acc10_menubar_redesign.py — Tests for ACC-10 full menu bar redesign.
+tests/test_menubar_redesign.py — Tests for the full menu bar redesign.
 
 Covers:
   - Icon state machine: 🎙/🟢/⚠️/❌/⏸ based on health/processing/model state

@@ -22,8 +22,6 @@ Design notes
   Extracting it here is purely additive for this WI; the Mac app keeps its
   current behavior. A future WI can refactor ``menubar_app.py`` to import
   these helpers.
-
-WI: WI-ACC-27d (Windows packaging)
 """
 
 from __future__ import annotations
@@ -148,7 +146,7 @@ def get_status(
     status.pending_count = int(queue.get("pending", payload.get("pending", 0)) or 0)
 
     # Model load state: nested under "models" in current server.py, but the
-    # WI-ACC-27d spec example uses top-level keys. Accept both.
+    # flat /health spec example uses top-level keys. Accept both.
     models = payload.get("models") or {}
     status.whisper_loaded = bool(
         models.get("whisper_loaded", payload.get("whisper_loaded", False))
@@ -187,7 +185,7 @@ def get_logs(
 
     ``source`` defaults to ``"companion"`` — the cross-platform name for the
     menubar/tray app log. The server accepts ``server``, ``menubar``,
-    ``companion``, or ``all`` (per the WI-ACC-27 §2.4 alias).
+    ``companion``, or ``all`` (per the §2.4 source alias).
 
     Returns the response body verbatim on 2xx, or a short ``"(error: ...)"``
     string on failure. Never raises.

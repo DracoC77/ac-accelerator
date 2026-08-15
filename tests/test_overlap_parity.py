@@ -1,8 +1,8 @@
 """
-tests/test_wi_acc18_overlap_parity.py — Unit tests for ACC-18: overlap parity.
+tests/test_overlap_parity.py — Unit tests for overlap parity.
 
 Verifies that _process_diarization() emits is_overlap / overlap_ratio for
-every segment so the main repo can run WI55 crosstalk detection on the
+every segment so the main repo can run crosstalk detection on the
 remote-diarization path.
 
 All pyannote/mlx imports are mocked — no GPU, no real models needed.

@@ -135,13 +135,13 @@ step "Installing application files"
 if [[ "${HAS_REPO_FILES}" == true ]]; then
     # Always overwrite server.py — it is managed application code, not user-editable.
     # The "skip if exists" guard must NOT apply here; without overwriting, bug fixes
-    # and upgrades in server.py never reach an existing install (ACC-13).
+    # and upgrades in server.py never reach an existing install.
     cp "${SCRIPT_DIR}/server.py" "${INSTALL_DIR}/server.py"
     success "Copied server.py to ${INSTALL_DIR}/"
-    # ACC-29: copy the accelerator/ package alongside server.py.
+    # Copy the accelerator/ package alongside server.py.
     # server.py imports from accelerator.backends at module level; without this
     # the service fails with ModuleNotFoundError: No module named 'accelerator'.
-    # rm -rf first (per ACC-13 "managed code, fully overwritten" philosophy):
+    # rm -rf first ("managed code, fully overwritten" philosophy):
     # `cp -r src dst` nests src inside dst when dst already exists, so a re-run
     # would produce accelerator/accelerator/ and silently load stale code instead.
     if [[ -d "${SCRIPT_DIR}/accelerator" ]]; then
@@ -239,8 +239,8 @@ HF_TOKEN=${HF_TOKEN}
 # ── Job Queue ───────────────────────────────────────────────────────────────
 MAX_CONCURRENT_JOBS=2
 MAX_QUEUE_DEPTH=20
-# WI-BUG-14: match server.py default (2048). Previously hardcoded 500 here,
-# which silently re-clobbered the WI-ACC-BUG-7 large-file cap on every reinstall.
+# Match server.py default (2048). Previously hardcoded 500 here,
+# which silently re-clobbered the large-file cap on every reinstall.
 MAX_FILE_SIZE_MB=2048
 
 # ── Cache ───────────────────────────────────────────────────────────────────

@@ -1,5 +1,5 @@
 """
-conftest.py — Shared pytest fixtures for openclaw-audio-chronicle-accelerator.
+conftest.py — Shared pytest fixtures for Audio Chronicle Accelerator.
 
 Provides:
   - ground_truth_wav: uses the FIXTURE_PATH env var for a local copy of the
@@ -41,7 +41,7 @@ _GROUND_TRUTH_TEXT = (
     "Yeah totally agree "
     "I was thinking we should double check the resemblyzer version compatibility "
     "Good call I will add a smoke test for the VoiceEncoder import "
-    "Okay so the afternoon session We are going to review the WI5 code "
+    "Okay so the afternoon session We are going to review the code "
     "The sidecar approach makes sense We might want a sanity check"
 )
 

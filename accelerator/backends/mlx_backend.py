@@ -1,6 +1,6 @@
 """mlx-whisper inference backend (Apple Silicon / Metal).
 
-Extracted from ``server.py`` in WI-ACC-27a with zero behavior change.
+Extracted from ``server.py`` with zero behavior change.
 Mirrors the exact load/unload semantics, logging strings, and per-segment
 field set that ``_process_transcription`` produced previously.
 """

@@ -1,5 +1,5 @@
 """
-WI-ACC-7: E2E pytest tests for Audio Chronicle Accelerator.
+E2E pytest tests for Audio Chronicle Accelerator.
 
 Requires a live server instance:
   ACCELERATOR_URL=http://localhost:8765 pytest tests/e2e/ -v

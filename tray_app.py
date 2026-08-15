@@ -10,14 +10,12 @@ service ``AccServer`` owns the uvicorn lifecycle; this tray app only:
   - opens the logs folder in Explorer
 
 It is started by a per-user Startup folder shortcut written by
-``install_windows.ps1`` (step 10 in §4.2 of the WI spec). The tray app is
-intentionally minimal — see WI-ACC-27 §3.4 for the scope decisions.
+``install_windows.ps1`` (step 10 in §4.2 of the install spec). The tray app is
+intentionally minimal to keep CI-importable surface area small.
 
 The ``pystray`` / ``PIL`` imports are guarded so this module remains
 importable on CI machines (Linux, no display) for at least a syntax check
 and the companion_client integration test.
-
-WI: WI-ACC-27d (Windows packaging)
 """
 
 from __future__ import annotations

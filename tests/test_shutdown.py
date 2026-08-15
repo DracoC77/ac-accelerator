@@ -1,4 +1,4 @@
-"""WI-ACC-27c: graceful shutdown + VRAM release + upload sweeper.
+"""Graceful shutdown + VRAM release + upload sweeper.
 
 These tests exercise the new shutdown plumbing without spinning up
 uvicorn or actually loading mlx-whisper. They focus on the pure-Python

@@ -1,4 +1,4 @@
-"""WI-ACC-27a: backend abstraction sanity tests.
+"""Backend abstraction sanity tests.
 
 These tests don't require mlx-whisper to be installed — they only verify the
 ABC contract, the dataclass shapes, and that ``MlxWhisperBackend`` is a valid
@@ -91,7 +91,7 @@ def test_mlx_backend_transcribe_without_module_raises():
     clean error rather than silently passing or crashing with an AttributeError.
 
     This is the guard for the tech debt documented in server.py at the
-    ``backend._module = whisper_module`` injection site (WI-ACC-27b):
+    ``backend._module = whisper_module`` injection site:
     replacing the injection with set_module_loader() requires confidence that
     the bare-backend path fails loudly instead of silently.
     """

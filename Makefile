@@ -1,4 +1,4 @@
-# WI-ACC-7: Makefile for openclaw-audio-chronicle-accelerator tests
+# Makefile for Audio Chronicle Accelerator tests
 
 .PHONY: test test-e2e test-all
 

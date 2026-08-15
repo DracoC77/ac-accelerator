@@ -1,5 +1,5 @@
 """
-WI-ACC-24: Tests verifying temperature and no_speech_threshold are correctly included
+Tests verifying temperature and no_speech_threshold are correctly included
 in the cache key (Bug 1), forwarded to the inference worker params (Bug 2), and passed
 through to mlx-whisper kwargs (Bug 3).
 
@@ -33,7 +33,7 @@ def _wav_file(name: str = "test.wav") -> tuple:
 # Fixtures
 # ---------------------------------------------------------------------------
 
-# WI-ACC-28: _reset_rate_limits fixture removed — per-IP rate limiter deleted.
+# _reset_rate_limits fixture removed — per-IP rate limiter deleted.
 
 
 @pytest.fixture()

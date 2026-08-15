@@ -1,5 +1,5 @@
 """
-WI-ACC-23: Unit tests for cache management API endpoints + bypass_cache flag.
+Unit tests for cache management API endpoints + bypass_cache flag.
 
 Covers:
   GET    /cache                     — list entries
@@ -50,7 +50,7 @@ def _wav_file(name: str = "test.wav"):
 # Fixtures
 # ---------------------------------------------------------------------------
 
-# WI-ACC-28: _reset_rate_limits fixture removed — per-IP rate limiter deleted.
+# _reset_rate_limits fixture removed — per-IP rate limiter deleted.
 
 
 @pytest.fixture()

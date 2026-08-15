@@ -20,7 +20,7 @@ pyannote.audio>=3.1.0
 
 # --- Platform-specific transcription backends ---
 
-# Windows-only (CUDA / faster-whisper backend, WI-ACC-27b)
+# Windows-only (CUDA / faster-whisper backend)
 faster-whisper>=1.1.0; sys_platform == "win32"
 torch>=2.7.0; sys_platform == "win32"  # install via --index-url https://download.pytorch.org/whl/cu128
 

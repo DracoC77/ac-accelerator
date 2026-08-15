@@ -7,8 +7,6 @@ after `install_windows.ps1` has set up the AccServer service.
 
 ## `test_vram_release.ps1`
 
-**WI reference:** WI-ACC-27c — "Graceful shutdown / VRAM release" (AC-VR-4)
-
 Tests that GPU VRAM is properly released under all four kill scenarios:
 
 | # | Scenario | How it stops |

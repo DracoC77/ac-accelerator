@@ -5,7 +5,7 @@ Concrete backends (e.g. :mod:`accelerator.backends.mlx_backend`) own the model
 object and are responsible for loading/unloading it and normalizing their
 native output into :class:`TranscriptResult`.
 
-WI-ACC-27a — pure refactor, no behavior change vs. the previous inline
+Pure refactor, no behavior change vs. the previous inline
 mlx-whisper code path in ``server.py``.
 """
 
@@ -20,7 +20,7 @@ from typing import Any, Optional
 class TranscriptSegment:
     """A single transcript segment, normalized across backends.
 
-    The first five fields are the canonical schema from WI-ACC-27 §1.3.
+    The first five fields are the canonical schema from the backend design §1.3.
     The trailing fields (``tokens``, ``compression_ratio``) are preserved
     here so that backends which expose them (mlx-whisper does) can keep
     the existing server.py response payload byte-identical. Backends that

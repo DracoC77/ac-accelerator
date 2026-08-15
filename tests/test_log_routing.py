@@ -1,5 +1,5 @@
 """
-WI-ACC-20: Tests for fixed log routing in server.py and menubar_app.py.
+Tests for fixed log routing in server.py and menubar_app.py.
 
 Verifies:
  - _setup_file_logging() attaches a RotatingFileHandler to the root logger

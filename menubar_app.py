@@ -1,5 +1,5 @@
 """
-Audio Chronicle Accelerator — macOS Menu Bar App (ACC-10 redesign)
+Audio Chronicle Accelerator — macOS Menu Bar App
 
 Provides a compact, state-driven menu bar UI for monitoring and controlling
 the accelerator service.
@@ -18,7 +18,7 @@ Menu layout:
      ⏱ 1m 23s elapsed            ← elapsed since job started locally
      📁 Last: 3m ago · 8 (12h)   ← last completion + 12h count
   ─────
-  🌐 http://<local-ip>:<port>    ← ACC-19: local IP + port, click to copy
+  🌐 http://<local-ip>:<port>    ← local IP + port, click to copy
   ─────
   ☑ Whisper  ☑ Pyannote          ← ☒ when not loaded
   🧠 1.2 GB                      ← from /memory rss_mb
@@ -193,7 +193,7 @@ def _format_elapsed(ts: float) -> str:
 
 
 class AcceleratorMenuBar(rumps.App):
-    """Menu bar app for the Audio Chronicle Accelerator service (ACC-10)."""
+    """Menu bar app for the Audio Chronicle Accelerator service."""
 
     def __init__(self) -> None:
         super().__init__("🎙", quit_button=None)
@@ -206,7 +206,7 @@ class AcceleratorMenuBar(rumps.App):
             {"Authorization": f"Bearer {token}"} if token else {}
         )
 
-        # ACC-19: resolve local URL once at startup
+        # Resolve local URL once at startup
         port = cfg.get("ACCELERATOR_PORT", "8765")
         local_ip = _get_local_ip()
         self._local_url: str = f"http://{local_ip}:{port}"
@@ -215,7 +215,7 @@ class AcceleratorMenuBar(rumps.App):
         self._service_paused: bool = False
         self._lock = threading.Lock()
 
-        # ACC-10: local job state tracking
+        # Local job state tracking
         # These are updated by _update_menu() to detect processing transitions.
         self._prev_processing: int = 0        # previous poll's queue.processing count
         self._last_job_completed_at: Optional[float] = None   # epoch when processing → 0
@@ -239,9 +239,9 @@ class AcceleratorMenuBar(rumps.App):
         self._last_job_item = rumps.MenuItem("📁 Last: never")
         self._last_job_item.set_callback(None)
 
-        # ── ACC-19: Local URL (display-only, WI-ACC-BUG-3) ──────────────────────
+        # ── Local URL (display-only) ──────────────────────
         self._local_url_item = rumps.MenuItem(f"🌐 {self._local_url}")
-        # WI-ACC-BUG-3: display-only (no callback = greyed out, non-clickable)
+        # Display-only (no callback = greyed out, non-clickable)
         self._local_url_item.set_callback(None)
 
         # ── Model / memory status ────────────────────────────────────────────
@@ -582,14 +582,14 @@ class AcceleratorMenuBar(rumps.App):
         """Open config.env in TextEdit (forced via -e flag)."""
         # `open config_path` would use whatever default app is registered
         # for .env files (often nothing, or an IDE). The -e flag forces
-        # TextEdit so users always get a plain-text editor (ACC-10).
+        # TextEdit so users always get a plain-text editor.
         if not CONFIG_FILE.exists():
             INSTALL_DIR.mkdir(parents=True, exist_ok=True)
             CONFIG_FILE.touch()
         subprocess.run(["open", "-e", str(CONFIG_FILE)], capture_output=True)
 
     def _on_clear_cache(self, _sender) -> None:
-        """Clear all accelerator cache entries and show a notification (WI-ACC-23)."""
+        """Clear all accelerator cache entries and show a notification."""
         try:
             resp = requests.delete(
                 f"{self._base_url}/cache",
@@ -635,7 +635,7 @@ class AcceleratorMenuBar(rumps.App):
 
 
 def main() -> None:
-    # WI-ACC-22: suppress Dock icon. NSApplication.sharedApplication() initialises the
+    # Suppress Dock icon. NSApplication.sharedApplication() initialises the
     # NSApp singleton (idempotent — rumps calls it again in app.run()). The policy must
     # be set before the run loop starts; calling sharedApplication() here is the only
     # safe window that works across rumps versions.

@@ -1,4 +1,4 @@
-"""WI-ACC-27b: FasterWhisperBackend tests.
+"""FasterWhisperBackend tests.
 
 These tests run on the Mac build machine where neither ``faster_whisper`` nor
 CUDA-enabled torch is installed. We inject a stub ``faster_whisper`` module

@@ -1,6 +1,6 @@
 """faster-whisper (CTranslate2) inference backend for CUDA/Windows.
 
-WI-ACC-27b — companion to :mod:`accelerator.backends.mlx_backend`. Mirrors
+Companion to :mod:`accelerator.backends.mlx_backend`. Mirrors
 the same load/unload/transcribe contract from :class:`InferenceBackend`,
 targeting NVIDIA GPUs (RTX 5090) on Windows via the faster-whisper / CTranslate2
 runtime. Heavy imports (``faster_whisper``, ``torch``) are deferred to
@@ -49,7 +49,7 @@ class FasterWhisperBackend(InferenceBackend):
         device: Optional[str] = None,
         compute_type: Optional[str] = None,
     ) -> None:
-        # Defaults mirror the WI-ACC-27 design doc — large-v3-turbo on CUDA
+        # Defaults mirror the backend design doc — large-v3-turbo on CUDA
         # with int8_float16 quant for the 5090.
         self._model_name = model or os.getenv(
             "WHISPER_MODEL", "large-v3-turbo"
@@ -168,7 +168,7 @@ class FasterWhisperBackend(InferenceBackend):
                 "language": language,
                 "initial_prompt": initial_prompt,
                 "word_timestamps": False,
-                # VAD is handled upstream by the pipeline (WI-ACC-27 §3.2).
+                # VAD is handled upstream by the pipeline (see design §3.2).
                 "vad_filter": False,
             }
             if temperature is not None:

@@ -1,5 +1,5 @@
 """
-Tests for WI-ACC-5: bearer token auth, rate limiting, file size enforcement,
+Tests for bearer token auth, rate limiting, file size enforcement,
 and security headers.
 
 These tests use FastAPI's TestClient and monkeypatching — no real ML models
@@ -36,7 +36,7 @@ def _audio_file(size_bytes: int = 100, name: str = "test.wav"):
 # Fixtures
 # ---------------------------------------------------------------------------
 
-# WI-ACC-28: reset_rate_limits fixture removed — per-IP rate limiter deleted.
+# reset_rate_limits fixture removed — per-IP rate limiter deleted.
 # Queue-depth 503 admission control is the only gate; no shared state to reset.
 
 
@@ -162,9 +162,9 @@ def test_valid_token_returns_200(authed_client, monkeypatch):
 
 
 # ---------------------------------------------------------------------------
-# WI-ACC-28: test_rate_limit_enforced removed
+# test_rate_limit_enforced removed
 # ---------------------------------------------------------------------------
-# The per-IP sliding-window rate limiter was deleted in WI-ACC-28.
+# The per-IP sliding-window rate limiter was deleted.
 # Queue-depth 503 tests now live in test_server.py (test_transcribe_queue_full_returns_503,
 # test_diarize_queue_full_returns_503).
 

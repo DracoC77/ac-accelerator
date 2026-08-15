@@ -83,7 +83,7 @@ HF_TOKEN = os.getenv("HF_TOKEN", "")
 WHISPER_MODEL = os.getenv("WHISPER_MODEL", "mlx-community/whisper-large-v3-turbo")
 DIARIZE_MODEL = os.getenv("DIARIZE_MODEL", "pyannote/speaker-diarization-3.1")
 
-# WI-80b: per-turn is_overlap threshold. Prior to WI-80b this was hardcoded
+# Per-turn is_overlap threshold. Previously this was hardcoded
 # to ``overlap_duration > 0.0`` — any non-zero brush against an overlap
 # region (even 1 ms) flagged the entire turn as is_overlap=True. Production
 # validation against the main repo's local pyannote path (which uses 0.3)
@@ -94,12 +94,12 @@ DIARIZE_TURN_OVERLAP_THRESHOLD = float(
     os.environ.get("DIARIZE_TURN_OVERLAP_THRESHOLD", "0.3")
 )
 IDLE_TIMEOUT_SECONDS = int(os.getenv("IDLE_TIMEOUT_SECONDS", "300"))
-# WI-ACC-BUG-7: raised default 500 -> 2048 MB. Long recordings (2-3h
+# Raised default 500 -> 2048 MB. Long recordings (2-3h
 # morning sessions) produce 16kHz mono WAVs of 500-700 MB, and the prior
 # 500 MB cap caused HTTP 413 -> slow CPU fallback. 2 GB covers ~6h of
 # 16kHz mono audio. Still env-overridable via MAX_FILE_SIZE_MB.
 MAX_FILE_SIZE_MB = int(os.getenv("MAX_FILE_SIZE_MB", "2048"))
-# WI-ACC-27b: Windows/RTX 5090 has plenty of VRAM for parallel jobs;
+# Windows/RTX 5090 has plenty of VRAM for parallel jobs;
 # Mac default stays at 2 to avoid Metal contention.
 _default_max_jobs = 3 if platform.system() == "Windows" else 2
 MAX_CONCURRENT_JOBS = int(os.getenv("MAX_CONCURRENT_JOBS", str(_default_max_jobs)))
@@ -116,7 +116,7 @@ PRELOAD_MODELS = os.getenv("PRELOAD_MODELS", "false").lower() in ("true", "1", "
 MAX_FILE_SIZE_BYTES = MAX_FILE_SIZE_MB * 1024 * 1024
 ALLOWED_EXTENSIONS = {".wav", ".ogg", ".mp3", ".m4a", ".flac", ".webm", ".opus"}
 
-# WI-ACC-28: Per-IP req/min rate limiter removed.
+# Per-IP req/min rate limiter removed.
 # In a single-client LAN deployment the sliding-window counter was a false positive
 # factory: cache hits and small-chunk pipelines easily exceed 10-30 req/60 s even
 # for legitimate workloads → 429 → CPU fallback stall (confirmed: 4h 49 min).
@@ -530,7 +530,7 @@ _idle_watchdog_running: bool = False
 
 _pyannote_pipeline: Any = None
 
-# WI-ACC-27a: inference backend is constructed at startup via
+# Inference backend is constructed at startup via
 # accelerator.backends.create_backend(); see lifespan() below. Until then
 # the binding is None so import-time doesn't pull mlx_whisper in.
 from accelerator.backends import InferenceBackend, create_backend  # noqa: E402
@@ -552,7 +552,7 @@ def _get_backend() -> InferenceBackend:
 
     Thread-safe: uses double-checked locking via ``_backend_init_lock``
     so two concurrent startup requests cannot both create a backend and
-    silently discard one.  (WI-ACC-27b fix)
+    silently discard one.
     """
     global _inference_backend
     if _inference_backend is not None:
@@ -728,7 +728,7 @@ def _stop_cache_sweep() -> None:
 
 
 # ---------------------------------------------------------------------------
-# WI-ACC-27c: orphaned upload sweeper + graceful shutdown helpers
+# Orphaned upload sweeper + graceful shutdown helpers
 # ---------------------------------------------------------------------------
 
 ORPHANED_UPLOAD_TTL_SECONDS = 3600  # 1 hour
@@ -811,7 +811,7 @@ def _shutdown_release_models() -> None:
 
 
 # ---------------------------------------------------------------------------
-# WI-ACC-27c: Windows CTRL handler so NSSM stop terminates the process
+# Windows CTRL handler so NSSM stop terminates the process
 # cleanly.  NSSM sends CTRL_BREAK_EVENT via GenerateConsoleCtrlEvent;
 # we translate it into a SIGINT so uvicorn's existing signal path runs
 # the lifespan shutdown.
@@ -870,7 +870,7 @@ def _process_transcription(job: dict) -> dict:
     # their mock's ``transcribe(...)`` invoked.
     whisper_module = _load_whisper()
     if hasattr(backend, "_module"):
-        # TECH DEBT (WI-ACC-27b): _module injection for test mock compat;
+        # TECH DEBT: _module injection for test mock compat;
         # replace with backend.set_module_loader() when test suite is migrated
         backend._module = whisper_module  # type: ignore[attr-defined]
         backend._loaded = True  # type: ignore[attr-defined]
@@ -881,17 +881,17 @@ def _process_transcription(job: dict) -> dict:
     # any kwargs they don't recognize.
     backend_kwargs: dict[str, Any] = {"model": model}
     language = params.get("language") or None
-    # WI-11: temperature — accept scalar float or JSON-serialized list (tuple for fallback chain)
+    # Temperature — accept scalar float or JSON-serialized list (tuple for fallback chain)
     if "temperature" in params and params["temperature"] is not None:
         raw_temp = params["temperature"]
         if isinstance(raw_temp, list):
             backend_kwargs["temperature"] = tuple(float(x) for x in raw_temp)
         else:
             backend_kwargs["temperature"] = float(raw_temp)
-    # WI-11: no_speech_threshold
+    # no_speech_threshold
     if "no_speech_threshold" in params and params["no_speech_threshold"] is not None:
         backend_kwargs["no_speech_threshold"] = float(params["no_speech_threshold"])
-    # WI68b: condition_on_previous_text — forwarded as string "true"/"false" from container
+    # condition_on_previous_text — forwarded as string "true"/"false" from container
     if "condition_on_previous_text" in params and params["condition_on_previous_text"] is not None:
         raw_copt = params["condition_on_previous_text"]
         if isinstance(raw_copt, str):
@@ -991,14 +991,14 @@ def _process_diarization(job: dict) -> dict:
     else:
         annotation = output
 
-    # ACC-18 (WI55 parity): compute per-turn overlap metrics so the main repo
+    # Compute per-turn overlap metrics so the main repo
     # can run crosstalk detection on the remote-diarization path.
     # get_overlap() returns a Timeline of segments where ≥2 speakers overlap.
     # .support() merges adjacent overlap regions to prevent double-counting when 3+ speakers overlap
     overlap_timeline = annotation.get_overlap().support()
 
-    # WI-80b Defect A: serialise the merged overlap regions so the main
-    # repo can run the per-segment intersection (Bug #2 fix from WI-80a)
+    # Serialise the merged overlap regions so the main
+    # repo can run the per-segment intersection (bug #2 fix)
     # on the accelerator path. Without this list the main repo passes
     # ``overlap_timeline=None`` into ``align_with_transcript()`` on every
     # remote run, leaving the per-segment fix dead code in production.
@@ -1022,7 +1022,7 @@ def _process_diarization(job: dict) -> dict:
             if turn_duration > 0
             else 0.0
         )
-        # WI-80b Defect B: was ``overlap_duration > 0.0`` — any touch
+        # Was ``overlap_duration > 0.0`` — any touch
         # flagged the whole turn (degenerate). Now matches the main repo
         # local pyannote path threshold (diarize.py line 360).
         is_overlap = overlap_ratio > DIARIZE_TURN_OVERLAP_THRESHOLD
@@ -1044,7 +1044,7 @@ def _process_diarization(job: dict) -> dict:
     )
     return {
         "segments": segments,
-        # WI-80b Defect A: enables per-segment intersection on the main
+        # Enables per-segment intersection on the main
         # repo side (align_with_transcript bug #2 fix). Old clients that
         # don't know about this key simply ignore it.
         "overlap_regions": overlap_regions,
@@ -1143,7 +1143,7 @@ def verify_token(
 
 
 # ---------------------------------------------------------------------------
-# Rate limiting — REMOVED (WI-ACC-28)
+# Rate limiting — REMOVED
 # ---------------------------------------------------------------------------
 # The per-IP sliding-window rate limiter has been removed.  Queue-depth
 # admission control (MAX_QUEUE_DEPTH=20 → 503 Service Unavailable) is the
@@ -1188,13 +1188,13 @@ async def lifespan(app: FastAPI):
                 )
         finally:
             conn.close()
-    # WI-ACC-27c: sweep orphaned upload WAVs left behind by a prior
+    # Sweep orphaned upload WAVs left behind by a prior
     # crash / forced shutdown.  Best-effort — swallow errors.
     try:
         _sweep_orphaned_uploads()
     except Exception:
         logger.exception("Startup sweep of orphaned uploads failed")
-    # WI-ACC-27a: select + instantiate the inference backend up front when
+    # Select + instantiate the inference backend up front when
     # possible so misconfiguration surfaces at startup, not on first job.
     # Fall back to lazy creation on first use if selection fails here
     # (preserves existing Linux test behavior where mlx_whisper is
@@ -1224,7 +1224,7 @@ async def lifespan(app: FastAPI):
         PRELOAD_MODELS,
     )
     yield
-    # WI-ACC-27c: graceful shutdown — stop background threads, mark
+    # Graceful shutdown — stop background threads, mark
     # in-flight jobs failed, and release VRAM so NSSM-triggered
     # restarts come back quickly without a hung GPU context.
     logger.info("Accelerator shutting down")
@@ -1392,10 +1392,10 @@ async def create_transcription(
     model: Optional[str] = Form(None),
     language: Optional[str] = Form(None),
     response_format: Optional[str] = Form(None),
-    temperature: Optional[str] = Form(None),        # WI-11: scalar float or JSON list for fallback
-    no_speech_threshold: Optional[str] = Form(None),  # WI-11: float threshold for no-speech filter
-    bypass_cache: Optional[str] = Query(None, description="Set to 'true' to skip cache lookup and always run fresh"),  # WI-ACC-23
-    condition_on_previous_text: Optional[str] = Form(None),  # WI68b: hallucination guard (WI-10)
+    temperature: Optional[str] = Form(None),        # scalar float or JSON list for fallback
+    no_speech_threshold: Optional[str] = Form(None),  # float threshold for no-speech filter
+    bypass_cache: Optional[str] = Query(None, description="Set to 'true' to skip cache lookup and always run fresh"), 
+    condition_on_previous_text: Optional[str] = Form(None),  # hallucination guard
     _auth: None = Depends(verify_token),
 ):
     pending = job_count_by_status("queued")
@@ -1413,12 +1413,12 @@ async def create_transcription(
     cache_params = {"model": model or WHISPER_MODEL}
     if language:
         cache_params["language"] = language
-    # WI-11: include temperature and NST in cache key so different param sets don't share cache
+    # Include temperature and NST in cache key so different param sets don't share cache
     if temperature is not None:
         cache_params["temperature"] = temperature
     if no_speech_threshold is not None:
         cache_params["no_speech_threshold"] = no_speech_threshold
-    # WI68b: include condition_on_previous_text in cache key so true/false don't share entries
+    # Include condition_on_previous_text in cache key so true/false don't share entries
     if condition_on_previous_text is not None:
         cache_params["condition_on_previous_text"] = condition_on_previous_text
     cache_key = compute_cache_key(raw_bytes, "transcription", **cache_params)
@@ -1447,19 +1447,19 @@ async def create_transcription(
         params["language"] = language
     if response_format:
         params["response_format"] = response_format
-    # WI-11: parse and forward temperature (scalar or JSON list) and no_speech_threshold
+    # Parse and forward temperature (scalar or JSON list) and no_speech_threshold
     if temperature is not None:
         try:
             parsed_temp = json.loads(temperature)  # handles "[0.0, 0.2, ...]" or "0.0"
             params["temperature"] = parsed_temp
         except (json.JSONDecodeError, ValueError):
-            logger.warning("WI-11: malformed temperature value %r — ignoring, accelerator will use default", temperature)
+            logger.warning("malformed temperature value %r — ignoring, accelerator will use default", temperature)
     if no_speech_threshold is not None:
         try:
             params["no_speech_threshold"] = float(no_speech_threshold)
         except ValueError:
-            logger.warning("WI-11: malformed no_speech_threshold value %r — ignoring, accelerator will use default", no_speech_threshold)
-    # WI68b: forward condition_on_previous_text (string "true"/"false") to params
+            logger.warning("malformed no_speech_threshold value %r — ignoring, accelerator will use default", no_speech_threshold)
+    # Forward condition_on_previous_text (string "true"/"false") to params
     if condition_on_previous_text is not None:
         params["condition_on_previous_text"] = condition_on_previous_text.lower().strip()
     logger.info(
@@ -1477,7 +1477,7 @@ async def create_diarization(
     file: UploadFile = File(...),
     min_speakers: Optional[int] = Form(None),
     max_speakers: Optional[int] = Form(None),
-    bypass_cache: Optional[str] = Query(None, description="Set to 'true' to skip cache lookup and always run fresh"),  # WI-ACC-23
+    bypass_cache: Optional[str] = Query(None, description="Set to 'true' to skip cache lookup and always run fresh"), 
     _auth: None = Depends(verify_token),
 ):
     pending = job_count_by_status("queued")

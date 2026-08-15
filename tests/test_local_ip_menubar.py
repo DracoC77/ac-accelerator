@@ -1,5 +1,5 @@
 """
-tests/test_wi_acc19_local_ip_menubar.py — Tests for ACC-19: local IP + port menubar item.
+tests/test_local_ip_menubar.py — Tests for local IP + port menubar item.
 
 Covers:
   - _get_local_ip() returns a non-loopback IP when socket succeeds
@@ -24,7 +24,7 @@ import pytest
 
 
 # ---------------------------------------------------------------------------
-# Shared test infrastructure (re-uses patterns from test_wi_acc10)
+# Shared test infrastructure (re-uses patterns from test_menubar_redesign)
 # ---------------------------------------------------------------------------
 
 

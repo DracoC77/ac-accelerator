@@ -1,6 +1,6 @@
 <#
 .SYNOPSIS
-    Audio Chronicle Accelerator — Windows install script (WI-ACC-27d).
+    Audio Chronicle Accelerator — Windows install script.
 
 .DESCRIPTION
     Installs the accelerator server as a Windows service (via NSSM) and
@@ -40,7 +40,6 @@
       * Python 3.12 (py launcher)
       * CUDA 12.8 runtime + cuDNN 9 (cudnn_ops_infer64_9.dll on PATH)
 
-    WI: WI-ACC-27d
 #>
 
 [CmdletBinding()]
@@ -83,7 +82,7 @@ function New-RandomToken {
 
 Write-Host ""
 Write-Host "================================================================" -ForegroundColor Magenta
-Write-Host "  Audio Chronicle Accelerator — Windows installer (WI-ACC-27d)" -ForegroundColor Magenta
+Write-Host "  Audio Chronicle Accelerator — Windows installer" -ForegroundColor Magenta
 Write-Host "================================================================" -ForegroundColor Magenta
 Write-Host ""
 Write-Host "  InstallDir : $InstallDir"
@@ -229,7 +228,7 @@ Write-Step "5. Upgrading pip + installing PyTorch (CUDA 12.8)"
 & $venvPython -m pip install --upgrade pip wheel setuptools | Out-Host
 
 # PyTorch must be installed FIRST from the cu128 index so pyannote doesn't
-# later pull in a CPU-only wheel. See WI-ACC-27 §6.1.
+# later pull in a CPU-only wheel. See the backend design §6.1.
 try {
     & $venvPython -m pip install --index-url https://download.pytorch.org/whl/cu128 torch | Out-Host
     if ($LASTEXITCODE -ne 0) { throw "pip install torch (cu128) failed" }
@@ -260,7 +259,7 @@ $winDeps = @(
 if ($LASTEXITCODE -ne 0) { Write-Err "pip install failed"; exit 1 }
 Write-Ok "core deps installed"
 
-# Pyannote with --no-deps to preserve the CUDA torch wheel (see WI-ACC-27 §6.1)
+# Pyannote with --no-deps to preserve the CUDA torch wheel (see backend design §6.1)
 try {
     & $venvPython -m pip install --no-deps "pyannote.audio>=3.1.0,<3.2" | Out-Host
     & $venvPython -m pip install --no-deps pyannote.core pyannote.database pyannote.metrics pyannote.pipeline | Out-Host
@@ -469,7 +468,7 @@ $stderrLog = Join-Path $LogsDir "stderr.log"
 & $nssmExe set $ServiceName AppRotateFiles 1 2>&1 | Out-Null
 & $nssmExe set $ServiceName AppRotateBytes 10485760 2>&1 | Out-Null
 
-# Graceful shutdown timings (WI-ACC-27 §3.2)
+# Graceful shutdown timings (see backend design §3.2)
 & $nssmExe set $ServiceName AppStopMethodSkip    0     2>&1 | Out-Null
 & $nssmExe set $ServiceName AppStopMethodConsole 15000 2>&1 | Out-Null
 & $nssmExe set $ServiceName AppStopMethodWindow  5000  2>&1 | Out-Null

@@ -1,5 +1,5 @@
 """
-WI-ACC-21: Unit tests for the GET /logs API endpoint.
+Unit tests for the GET /logs API endpoint.
 
 Verifies:
   - Auth is enforced (401 without token when ACCELERATOR_TOKEN is set)
@@ -29,7 +29,7 @@ from fastapi.testclient import TestClient
 # Fixtures
 # ---------------------------------------------------------------------------
 
-# WI-ACC-28: _reset_rate_limits fixture removed — per-IP rate limiter deleted.
+# _reset_rate_limits fixture removed — per-IP rate limiter deleted.
 
 
 @pytest.fixture()

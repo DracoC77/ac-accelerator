@@ -1,5 +1,5 @@
 """
-tests/test_wi68b_condition_on_previous_text.py -- WI68b: condition_on_previous_text support.
+tests/test_condition_on_previous_text.py -- condition_on_previous_text support.
 
 Verifies that:
   1. /v1/audio/transcriptions endpoint accepts condition_on_previous_text Form param
@@ -37,7 +37,7 @@ def _wav_file(name: str = "test.wav") -> tuple:
 # ---------------------------------------------------------------------------
 
 
-# WI-ACC-28: _reset_rate_limits fixture removed — per-IP rate limiter deleted.
+# _reset_rate_limits fixture removed — per-IP rate limiter deleted.
 
 
 @pytest.fixture()
@@ -77,7 +77,7 @@ class TestEndpointAcceptsParam:
                 data={"condition_on_previous_text": "false"},
             )
         assert resp.status_code != 422, (
-            "WI68b: condition_on_previous_text=false caused a 422 — "
+            "condition_on_previous_text=false caused a 422 — "
             "it is not declared as a Form param in the endpoint"
         )
         assert resp.status_code in (200, 202)
@@ -145,7 +145,7 @@ class TestCacheKeyInclusion:
 
         assert len(captured_keys) == 2
         assert captured_keys[0] != captured_keys[1], (
-            "WI68b: condition_on_previous_text=true and =false share the same cache key — "
+            "condition_on_previous_text=true and =false share the same cache key — "
             "different settings would serve each other's cached results"
         )
 
@@ -171,7 +171,7 @@ class TestCacheKeyInclusion:
 
         assert len(captured_keys) == 2
         assert captured_keys[0] != captured_keys[1], (
-            "WI68b: omitting condition_on_previous_text and passing 'false' share the same key"
+            "omitting condition_on_previous_text and passing 'false' share the same key"
         )
 
 
@@ -207,7 +207,7 @@ class TestParamsForwarding:
         assert len(captured_params) == 1
         params = captured_params[0]
         assert "condition_on_previous_text" in params, (
-            "WI68b: condition_on_previous_text not forwarded to job_create params"
+            "condition_on_previous_text not forwarded to job_create params"
         )
         assert params["condition_on_previous_text"] == "false"
 
@@ -271,7 +271,7 @@ class TestWhisperKwargsPassthrough:
         audio_file = tmp_path / "test.wav"
         audio_file.write_bytes(FAKE_WAV)
         return {
-            "job_id": "test-job-wi68b",
+            "job_id": "test-job-cpt",
             "file_path": str(audio_file),
             "params_json": json.dumps(params),
         }
@@ -295,7 +295,7 @@ class TestWhisperKwargsPassthrough:
 
         call_kwargs = mock_whisper.transcribe.call_args[1]
         assert "condition_on_previous_text" in call_kwargs, (
-            "WI68b: condition_on_previous_text not passed to whisper.transcribe kwargs"
+            "condition_on_previous_text not passed to whisper.transcribe kwargs"
         )
         assert call_kwargs["condition_on_previous_text"] is False, (
             f"Expected bool False, got {call_kwargs['condition_on_previous_text']!r}"
