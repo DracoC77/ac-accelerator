@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Label must be unique — different from the server plist -->
+    <key>Label</key>
+    <string>com.audio-chronicle-accelerator-menubar</string>
+
+    <!-- Only launch in GUI (Aqua) login sessions, not background daemons -->
+    <key>LimitLoadToSessionType</key>
+    <string>Aqua</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <string>-c</string>
+        <string>exec "${HOME}/.audio-chronicle-accelerator/venv/bin/python" "${HOME}/.audio-chronicle-accelerator/menubar_app.py"</string>
+    </array>
+
+    <key>WorkingDirectory</key>
+    <string>INSTALL_DIR_PLACEHOLDER</string>
+
+    <!-- Start at login -->
+    <key>RunAtLoad</key>
+    <true/>
+
+    <!-- Restart on crash, but not on clean exit (e.g. Quit from menu) -->
+    <key>KeepAlive</key>
+    <dict>
+        <key>SuccessfulExit</key>
+        <false/>
+    </dict>
+
+    <!-- Back off 10s before restarting after a crash -->
+    <key>ThrottleInterval</key>
+    <integer>10</integer>
+
+    <key>StandardOutPath</key>
+    <string>LOGS_DIR_PLACEHOLDER/menubar_stdout.log</string>
+
+    <key>StandardErrorPath</key>
+    <string>LOGS_DIR_PLACEHOLDER/menubar_stderr.log</string>
+
+    <!-- Environment: pass HOME so ~ expansion works inside the script -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>HOME</key>
+        <string>HOME_PLACEHOLDER</string>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+</dict>
+</plist>
