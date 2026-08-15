@@ -906,7 +906,7 @@ def _process_transcription(job: dict) -> dict:
     result = backend.transcribe(file_path, language=language, **backend_kwargs)
     infer_elapsed = time.monotonic() - t_infer
 
-    # WI-BUG-20: Whisper quality fields (avg_logprob, compression_ratio,
+    # Whisper quality fields (avg_logprob, compression_ratio,
     # no_speech_prob, temperature) can come back as NaN/Inf from mlx-whisper's
     # fp16 path — systematically for avg_logprob/compression_ratio in some
     # model builds. The global _sanitize_floats() pass below would turn those
@@ -921,7 +921,7 @@ def _process_transcription(job: dict) -> dict:
             return 0.0
         if math.isnan(f) or math.isinf(f):
             logger.warning(
-                "WI-BUG-20: non-finite %s on segment %d (job_id=%s) — "
+                "non-finite %s on segment %d (job_id=%s) — "
                 "replaced with 0.0",
                 field_name, segment_index, job_id,
             )
@@ -939,7 +939,7 @@ def _process_transcription(job: dict) -> dict:
             "avg_logprob": _quality(seg.avg_logprob, "avg_logprob", i),
             "compression_ratio": _quality(seg.compression_ratio, "compression_ratio", i),
             "no_speech_prob": _quality(seg.no_speech_prob, "no_speech_prob", i),
-            # WI-BUG-20: expose per-segment temperature in the HTTP response.
+            # expose per-segment temperature in the HTTP response.
             "temperature": _quality(getattr(seg, "temperature", 0.0), "temperature", i),
         })
     duration = 0.0

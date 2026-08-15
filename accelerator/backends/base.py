@@ -36,7 +36,7 @@ class TranscriptSegment:
     # server.py response payload. Optional for future backends.
     tokens: list[int] = field(default_factory=list)
     compression_ratio: float = 0.0
-    # WI-BUG-20: temperature used by Whisper for this segment. mlx-whisper
+    # temperature used by Whisper for this segment. mlx-whisper
     # surfaces this per-segment; faster-whisper also exposes it. Default 0.0
     # so backends that don't expose it produce a benign neutral value.
     temperature: float = 0.0

@@ -173,7 +173,7 @@ class MlxWhisperBackend(InferenceBackend):
                     no_speech_prob=seg.get("no_speech_prob", 0.0),
                     tokens=seg.get("tokens", []),
                     compression_ratio=seg.get("compression_ratio", 0.0),
-                    # WI-BUG-20: surface per-segment temperature so the HTTP
+                    # surface per-segment temperature so the HTTP
                     # response can expose it alongside the other quality
                     # signals. `or 0.0` guards against a present-but-None value.
                     temperature=float(seg.get("temperature", 0.0) or 0.0),

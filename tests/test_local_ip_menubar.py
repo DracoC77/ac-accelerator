@@ -110,7 +110,7 @@ def _build_app(config: dict | None = None):
             item.hidden = False
             setattr(app, attr, item)
 
-        # ACC-19: _local_url_item
+        # _local_url_item
         local_url_item = MagicMock()
         local_url_item.title = ""
         app._local_url_item = local_url_item

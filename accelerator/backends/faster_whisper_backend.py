@@ -183,7 +183,7 @@ class FasterWhisperBackend(InferenceBackend):
             # Materialize the generator fully — must NOT return a lazy iterator.
             segments: list[TranscriptSegment] = []
             for seg in segments_gen:
-                # WI-BUG-20: faster-whisper Segment exposes .temperature; use
+                # faster-whisper Segment exposes .temperature; use
                 # getattr with a 0.0 fallback so older releases or test fakes
                 # without the attribute don't break.
                 seg_temperature = getattr(seg, "temperature", 0.0)
